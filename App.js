@@ -72,15 +72,15 @@ const Stack = createStackNavigator();
       >
         {this.props.token.token==null ? (
         <>
-        {/* <Stack.Screen name="Login" component={LoginView} options={{ title: 'Login' }} />
-        <Stack.Screen name="Signup" component={SignupView} options={{ title: 'Signup' }} /> */}
-        <Stack.Screen name="Stores" component={StoresView} options={{ title: 'Categories' }} />
+        <Stack.Screen name="Login" component={LoginView} options={{ title: 'Login' }} />
+        <Stack.Screen name="Signup" component={SignupView} options={{ title: 'Signup' }} />
+        {/* <Stack.Screen name="Stores" component={StoresView} options={{ title: 'Categories' }} />
         <Stack.Screen name="Categories" component={CategoriesView} options={{ title: 'Categories' }} />
-        <Stack.Screen name="Items" component={ItemsView} options={{ title: 'Categories' }} />
+        <Stack.Screen name="Items" component={ItemsView} options={{ title: 'Categories' }} /> */}
         </>
         ) : (
         <>
-        <Stack.Screen name="Home" component={HomeView} options={{ title: 'Home' }} />
+        <Stack.Screen name="Stores" component={StoreView} options={{ title: 'Stores' }} />
         <Stack.Screen name="Categories" component={CategoriesView} options={{ title: 'Categories' }} />
         <Stack.Screen name="Checkout" component={CheckoutView} options={{ title: 'Checkout' }} />
         </>

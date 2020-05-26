@@ -41,22 +41,22 @@ class LoginView extends Component {
       }),
     }).then((response) => response.json())
         .then((responseJson) => {
-          this.props.navigation.navigate("Categories")
-          //token = responseJson.token;
-          //console.log("login : ")
-          //console.log(token)
-          //this.props.saveUserToken(token)
+          //this.props.navigation.navigate("Categories")
+          token = responseJson.token;
+          console.log("login : ")
+          console.log(token)
+          this.props.saveUserToken(token)
           .then(() => {
-              this.props.navigation.navigate('Home');
+              this.props.navigation.navigate('Stores');
           })
           .catch((error) => {
-            this.props.navigation.navigate("Categories")
-             // this.setState({ error })
+           // this.props.navigation.navigate("Categories")
+             this.setState({ error })
           })
         })
         .catch((error) => {
-          this.props.navigation.navigate("Categories")
-          //console.error(error);
+          //this.props.navigation.navigate("Categories")
+          console.error(error);
         });
       
     

@@ -25,17 +25,54 @@ class StoresView extends React.Component {
                 lcn:"Kamalanagar2",
                 dist:"3Km away"
             }
-        ]
+        ],
+        page: 1,
+        loading: false,
     }
 
+    fetchData = async () => {
+        this.setState({ loading: true });
+        console.log("fetching page : "+this.state.page)
+        
+        //console.log(this.props.token.token)
+        const response = await fetch('http://63eb3b16.ngrok.io/api/get_shops', {
+            method: 'POST',
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              token:this.props.token.token,
+              page: this.state.page,
+            }),
+          })
+          console.log("response :")
+          console.log(response.status)
+          console.log(response)
+              // this.setState(state => ({
+              //   data: [...state.data, ...json.shops],
+              //   loading: false
+              // }));
+
+      };
+
+    componentDidMount(){
+        console.log("stores mounted: ")
+        this.fetchData();
+    }
+
+    handleEnd = () => {
+        console.log("handle end")
+        if(this.state.page<4)
+        this.setState(state => ({ page: state.page + 1 }), () => this.fetchData());
+    };
 
 
-    
     defaultlistbackground = ()=>{
-     return (<View><Text>No elements</Text></View>)
-     }
+        return (<View><Text>No elements</Text></View>)
+    }
 
-     handlePress = (id) =>{
+    handlePress = (id) =>{
         this.props.add_shop_id(id)
         this.props.navigation.navigate("Categories")
     }
