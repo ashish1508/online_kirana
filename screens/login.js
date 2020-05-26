@@ -29,7 +29,7 @@ class LoginView extends Component {
 
   _signInAsync = () => {
 
-    fetch('http://1c2907eb.ngrok.io/api/usr_login', {
+    fetch('http://63eb3b16.ngrok.io/api/usr_login', {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -41,19 +41,22 @@ class LoginView extends Component {
       }),
     }).then((response) => response.json())
         .then((responseJson) => {
-          token = responseJson.token;
-          console.log("login : ")
-          console.log(token)
-          this.props.saveUserToken(token)
+          this.props.navigation.navigate("Categories")
+          //token = responseJson.token;
+          //console.log("login : ")
+          //console.log(token)
+          //this.props.saveUserToken(token)
           .then(() => {
               this.props.navigation.navigate('Home');
           })
           .catch((error) => {
-              this.setState({ error })
+            this.props.navigation.navigate("Categories")
+             // this.setState({ error })
           })
         })
         .catch((error) => {
-          console.error(error);
+          this.props.navigation.navigate("Categories")
+          //console.error(error);
         });
       
     

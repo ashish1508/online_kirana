@@ -23,7 +23,32 @@ export const error = error => ({
     type: 'ERROR',
     error,
 });
+export const addtocart = item => ({
+    type:"ADD_TO_CART",
+    item
+})
+export const removefromcart = item =>({
+    type:"REMOVE_FROM_CART",
+    item
+})
+export const incquantincart = item =>({
+    type:"INC_QUANT_IN_CART",
+    item
+})
+export const decquantincart = item =>({
+    type:"DEC_QUANT_IN_CART",
+    item
+})
 
+export const refreshitems = arr =>({
+    type:"REFRESH",
+    payload:arr
+})
+
+export const addshopid = id => ({
+    type:"ADD_SHOP_ID",
+    id
+})
 
 
 export const getUserToken = () => dispatch => 

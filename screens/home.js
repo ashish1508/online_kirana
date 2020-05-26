@@ -51,7 +51,7 @@ class HomeView extends React.Component {
         console.log("fetching page : "+this.state.page)
         
         //console.log(this.props.token.token)
-        const response = await fetch('http://1c2907eb.ngrok.io/api/get_shops', {
+        const response = await fetch('http://63eb3b16.ngrok.io/api/get_shops', {
             method: 'POST',
             headers: {
               Accept: 'application/json',
@@ -62,11 +62,14 @@ class HomeView extends React.Component {
               page: this.state.page,
             }),
           })
-          const json = await response.json();
-              this.setState(state => ({
-                data: [...state.data, ...json.shops],
-                loading: false
-              }));
+          console.log("response :")
+          console.log(response.status)
+          if(response.status===404)this.props.navigation.navigate("Categories")
+          console.log()
+              // this.setState(state => ({
+              //   data: [...state.data, ...json.shops],
+              //   loading: false
+              // }));
 
       };
 
@@ -133,7 +136,7 @@ class HomeView extends React.Component {
                 data={this.state.data}
                 keyExtractor={(x, i) => i.toString()}
                 onEndReached={() => this.handleEnd()}
-                onEndReachedThreshold={0.1}
+                onEndReachedThreshold={0.3}
                 ListEmptyComponent = {()=>this.defaultlistbackground()}
                 ListFooterComponent={() =>
                   this.state.loading
@@ -142,7 +145,7 @@ class HomeView extends React.Component {
                 renderItem={({ item }) =>
                   <ListItem
                     roundAvatar
-                    containerStyle={{aspectRatio:1}}
+                    containerStyle={{aspectRatio:2}}
                    //leftAvatar={{source:{ uri: item.picture.thumbnail }}}
                     title={item.name}
                   />}

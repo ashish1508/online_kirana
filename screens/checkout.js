@@ -15,13 +15,6 @@ class CheckoutView extends React.Component {
             })
     };
 
-   componentDidMount(){
-    if(this.props.token.token === null){
-        this.props.navigation.pop()
-        this.props.navigation.navigate('Login')
-
-    }
-   }
    render() {
        
        

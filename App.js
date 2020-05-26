@@ -1,10 +1,4 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow strict-local
- */
+
 import 'react-native-gesture-handler';
 import React,{Fragment,useEffect} from 'react';
 import {
@@ -21,6 +15,10 @@ import SignupView from './screens/signup.js'
 import LoginView  from './screens/login.js' 
 import HomeView from './screens/home.js'
 import CheckoutView from './screens/checkout.js'
+import CategoriesView from './screens/cleancategories.js'
+import StoresView from './screens/stores.js'
+import ItemsView from './screens/items.js'
+
 import SplashScreen from 'react-native-splash-screen';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -67,15 +65,23 @@ const Stack = createStackNavigator();
   render = () => {return (
     
     <NavigationContainer>
-      <Stack.Navigator>
+      <Stack.Navigator
+      screenOptions={{
+        headerShown:false
+      }}
+      >
         {this.props.token.token==null ? (
         <>
-        <Stack.Screen name="Login" component={LoginView} options={{ title: 'Login' }} />
-        <Stack.Screen name="Signup" component={SignupView} options={{ title: 'Signup' }} />
+        {/* <Stack.Screen name="Login" component={LoginView} options={{ title: 'Login' }} />
+        <Stack.Screen name="Signup" component={SignupView} options={{ title: 'Signup' }} /> */}
+        <Stack.Screen name="Stores" component={StoresView} options={{ title: 'Categories' }} />
+        <Stack.Screen name="Categories" component={CategoriesView} options={{ title: 'Categories' }} />
+        <Stack.Screen name="Items" component={ItemsView} options={{ title: 'Categories' }} />
         </>
         ) : (
         <>
         <Stack.Screen name="Home" component={HomeView} options={{ title: 'Home' }} />
+        <Stack.Screen name="Categories" component={CategoriesView} options={{ title: 'Categories' }} />
         <Stack.Screen name="Checkout" component={CheckoutView} options={{ title: 'Checkout' }} />
         </>
         )}
