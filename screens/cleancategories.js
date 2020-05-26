@@ -51,7 +51,7 @@ class CategoriesView extends React.Component {
     }
 
    defaultlistbackground = ()=>{
-    return (<View><Text>No elements</Text></View>)
+    return (<View style={{flex:1}}><Text>No elements</Text></View>)
     }
 
     handleEnd = () => {

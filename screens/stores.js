@@ -57,7 +57,7 @@ class StoresView extends React.Component {
 
     componentDidMount(){
         console.log("stores mounted: ")
-        this.fetchData();
+         this.fetchData();
     }
 
     handleEnd = () => {
@@ -68,7 +68,7 @@ class StoresView extends React.Component {
 
 
     defaultlistbackground = ()=>{
-        return (<View><Text>No elements</Text></View>)
+        return (<View style={{flex:1}}><Text>No elements</Text></View>)
     }
 
     handlePress = (id) =>{
@@ -119,7 +119,10 @@ class StoresView extends React.Component {
                          </TouchableOpacity>
                         }
                     />
+                 {this.props.cart.length>0 &&
+                <View style={styles.cart}>
 
+                </View>}
                 </View>
             )
 
@@ -189,11 +192,22 @@ color:"#4F517D",
 
 },
 
+cart:{
+    position:"absolute",
+    top:"93%",
+    width:"98%",
+    height:"6%",
+    marginHorizontal:"1%",
+    backgroundColor:"yellow",
+    borderRadius:4
+   }
+
 });
 
 const mapStateToProps = state => ({
     redux:state,
-    token:state.token
+    token:state.token,
+    cart:state.cart
 });
 
 const mapDispatchToProps = dispatch => ({

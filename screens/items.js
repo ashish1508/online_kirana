@@ -16,7 +16,8 @@ class ItemsView extends React.Component {
 
    render() {
             return (
-                <SafeAreaView style={styles.container}>
+                <SafeAreaView style={styles.container} >
+                <View style={styles.container}>
                 <View style = {styles.container}>
                     <Button title="Stores" onPress={()=>this.props.navigation.navigate("Stores")}/>
                 
@@ -27,6 +28,7 @@ class ItemsView extends React.Component {
                 <View style={styles.cart}>
 
                 </View>}
+                </View>
                 </SafeAreaView>
             )
 
