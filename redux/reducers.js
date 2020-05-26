@@ -98,7 +98,8 @@ data = [
         name:'item3',
         details:[{qu:'1lit',pri:1,in_cart:false,quant:0},{qu:'2lit',pri:2,in_cart:false,quant:0},{qu:'3lit',pri:3,in_cart:false,quant:0}],
         def_det:{qu:'1lit',pri:1,quant:0},
-    }
+    },
+
 ]
 
 

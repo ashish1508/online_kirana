@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View,Button ,Image, TouchableOpacity,FlatList} from 'react-native';
+import { StyleSheet, Text, View,Button ,Image, TouchableOpacity,FlatList,ActivityIndicator} from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import { connect } from 'react-redux';
 import { removeUserToken } from '../redux/actions';
@@ -11,13 +11,54 @@ import Icon from 'react-native-vector-icons/AntDesign';
 
 class CategoriesView extends React.Component {
     
-   state={
-       data:[{id:1,name:"cat1"},{id:2,name:"cat2"},{id:3,name:"cat3"},{id:4,name:"cat4"},{id:5,name:"cat5"}]
-   }
+    state={
+        data:[],
+        page: 1,
+        loading: false,
+    }
+
+    fetchData = async () => {
+        this.setState({ loading: true });
+        console.log("fetching page : "+this.state.page)
+        console.log(this.props.token)
+        
+        //console.log(this.props.token.token)
+        const response = await fetch('http://grocee.thenomadic.ninja/api/get_categories', {
+            method: 'POST',
+            headers: {
+              Accept: 'application/json',
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              token:this.props.token.token,
+              page: this.state.page,
+            }),
+          })
+          const json = await response.json()
+          console.log("-------")
+          console.log(json)
+          
+              this.setState(state => ({
+                data: [...state.data, ...json.categories],
+                loading: false
+              }));
+
+      };
+
+    componentDidMount(){
+        console.log("categories mounted: ")
+        this.fetchData();
+    }
 
    defaultlistbackground = ()=>{
     return (<View><Text>No elements</Text></View>)
     }
+
+    handleEnd = () => {
+        console.log("handle end")
+        if(this.state.page<4)
+        this.setState(state => ({ page: state.page + 1 }), () => this.fetchData());
+    };
 
 
    render() {
@@ -25,10 +66,10 @@ class CategoriesView extends React.Component {
                 <View style = {styles.container}>
                 <Button title="Items" onPress={()=>this.props.navigation.navigate("Items")}/>
                 <Text>{this.props.id}</Text>
-                <Text>Ashish</Text>
+                
                 <FlatList
                 data={this.state.data}
-                style={{backgroundColor:"pink"}}
+                style={{backgroundColor:"#ccc"}}
                 numColumns={3}
                 keyExtractor={(x, i) => i.toString()}
                 // onEndReached={() => this.handleEnd()}
@@ -41,10 +82,13 @@ class CategoriesView extends React.Component {
                 renderItem={({ item }) =>
                     <TouchableOpacity style={styles.bg} onPress={()=>this.props.navigation.navigate("Items")} >
                         <Image
-                            style={{width:"100%",height:"89%"}}
-                            source={require('../Components/sup120.jpg')}
+                            style={{width:"100%",height:"85%"}}
+                           // source={require('../Components/sup120.jpg')}
+                            source = {{uri:item.image}}
                         />
-                            <Text>{item.name}</Text>
+                        <View style={{width:"100%",height:"15%",alignItems:"center"}}>
+                            <Text adjustsFontSizeToFit >{item.name}</Text>
+                        </View>
                     </TouchableOpacity>
                 }
               />

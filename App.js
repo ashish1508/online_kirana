@@ -22,12 +22,14 @@ import ItemsView from './screens/items.js'
 import SplashScreen from 'react-native-splash-screen';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+
 import { connect } from 'react-redux';
 import { getUserToken } from './redux/actions';
 
 
 
 const Stack = createStackNavigator();
+
 
  class App extends React.Component {
 
@@ -80,9 +82,12 @@ const Stack = createStackNavigator();
         </>
         ) : (
         <>
-        <Stack.Screen name="Stores" component={StoreView} options={{ title: 'Stores' }} />
+        
+        <Stack.Screen name="Stores" component={StoresView} options={{ title: 'Stores' }} />
         <Stack.Screen name="Categories" component={CategoriesView} options={{ title: 'Categories' }} />
+        <Stack.Screen name="Items" component={ItemsView} options={{ title: 'Items' }} />
         <Stack.Screen name="Checkout" component={CheckoutView} options={{ title: 'Checkout' }} />
+        
         </>
         )}
          

@@ -7,6 +7,8 @@ import StoreItems from '../Components/storeItems'
 import Stores from '../Components/stores'
 import Modal from 'react-native-modal'
 import Icon from 'react-native-vector-icons/AntDesign';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { ScrollView } from 'react-native-gesture-handler';
 
 
 class ItemsView extends React.Component {
@@ -14,10 +16,18 @@ class ItemsView extends React.Component {
 
    render() {
             return (
+                <SafeAreaView style={styles.container}>
                 <View style = {styles.container}>
                     <Button title="Stores" onPress={()=>this.props.navigation.navigate("Stores")}/>
+                
                     <StoreItems/>
+                
                 </View>
+                {this.props.cart.length>0 &&
+                <View style={styles.cart}>
+
+                </View>}
+                </SafeAreaView>
             )
 
    }
@@ -27,11 +37,21 @@ const styles = StyleSheet.create({
    container: {
       flex: 1,
       backgroundColor: '#ccc',
+   },
+   cart:{
+    position:"absolute",
+    top:"93%",
+    width:"98%",
+    height:"6%",
+    marginHorizontal:"1%",
+    backgroundColor:"yellow",
+    borderRadius:4
    }
 });
 
 const mapStateToProps = state => ({
     token: state.token,
+    cart:state.cart
 });
 
 const mapDispatchToProps = dispatch => ({

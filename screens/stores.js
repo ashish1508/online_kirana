@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View,Button ,Image, TouchableOpacity,FlatList} from 'react-native';
+import { StyleSheet, Text, View,Button ,Image, TouchableOpacity,FlatList,ActivityIndicator} from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import { connect } from 'react-redux';
 import { removeUserToken ,addshopid} from '../redux/actions';
@@ -12,30 +12,28 @@ import Icon from 'react-native-vector-icons/AntDesign';
 class StoresView extends React.Component {
 
     state={
-        data:[
-            {
-                id:1,
-                name:"Sri Venkateshwarae",
-                lcn:"Kamalanagar",
-                dist:"2Km away"
-            },
-            {
-                id:2,
-                name:"Sri Venkateshwarae2",
-                lcn:"Kamalanagar2",
-                dist:"3Km away"
-            }
-        ],
+        data:[],
         page: 1,
         loading: false,
     }
 
+    _signOutAsync =  () => {
+        this.props.removeUserToken()
+            .then(() => {
+            
+            })
+            .catch(error => {
+                this.setState({ error })
+            })
+    };
+
     fetchData = async () => {
         this.setState({ loading: true });
         console.log("fetching page : "+this.state.page)
+        console.log(this.props.token)
         
         //console.log(this.props.token.token)
-        const response = await fetch('http://63eb3b16.ngrok.io/api/get_shops', {
+        const response = await fetch('http://grocee.thenomadic.ninja/api/get_shops', {
             method: 'POST',
             headers: {
               Accept: 'application/json',
@@ -46,13 +44,14 @@ class StoresView extends React.Component {
               page: this.state.page,
             }),
           })
-          console.log("response :")
-          console.log(response.status)
-          console.log(response)
-              // this.setState(state => ({
-              //   data: [...state.data, ...json.shops],
-              //   loading: false
-              // }));
+          const json = await response.json()
+          console.log("-------")
+          console.log(json)
+          
+              this.setState(state => ({
+                data: [...state.data, ...json.shops],
+                loading: false
+              }));
 
       };
 
@@ -81,6 +80,7 @@ class StoresView extends React.Component {
        
             return (
                 <View style = {styles.container}>
+                    <Button title="I'm done, sign me out" onPress={this._signOutAsync} />
                     <Button title="Categories" onPress={()=>this.props.navigation.navigate("Categories")}/>
                      <Text>{this.props.redux.cart.length}</Text>
                      {/* <Stores nav = {()=>this.props.navigation.navigate("Categories")}/>   */}
@@ -88,31 +88,32 @@ class StoresView extends React.Component {
                         data={this.state.data}
                         style={{backgroundColor:"#ccc"}}
                         keyExtractor={(x, i) => i.toString()}
-                        // onEndReached={() => this.handleEnd()}
-                        // onEndReachedThreshold={0.3}
+                        onEndReached={() => this.handleEnd()}
+                        onEndReachedThreshold={0.3}
                         ListEmptyComponent = {()=>this.defaultlistbackground()}
-                        // ListFooterComponent={() =>
-                        //   this.state.loading
-                        //     ? <ActivityIndicator size="large" animating />
-                        //     : null}
+                        ListFooterComponent={() =>
+                          this.state.loading
+                            ? <ActivityIndicator size="large" animating />
+                            : null}
                         renderItem={({ item }) =>
-                        <TouchableOpacity style={styles.header} onPress={()=>this.handlePress(item.id)}>
-                        <View style={{flex:1,flexDirection:"row",backgroundColor:"yellow"}} >
+                        <TouchableOpacity style={styles.header} onPress={()=>this.handlePress(item.shop_id)}>
+                        <View style={{flex:1,flexDirection:"row",backgroundColor:"white",justifyContent:"center",alignItems:"center"}} >
                              
                                   <Image
-                                            style={{width:"40%",height:"100%"}}
-                                            source={require('../Components/sup120.jpg')}
+                                            style={{width:"30%",height:"75%",borderRadius:10,marginRight:"2%"}}
+                                           // source={require('../Components/sup120.jpg')}
+                                           source = {{uri:item.image}}
                                     />
                                     <View style={styles.titleview}>
                                         <View style={styles.title}>
                                             <Text adjustsFontSizeToFit numberOfLines={1} style={{fontFamily:"PoetsenOne-Regular"}} >{item.name}</Text>
                                         </View>
                                         <View style={styles.lcn}>
-                                            <Text adjustsFontSizeToFit numberOfLines={1} style={{fontFamily:"PoetsenOne-Regular"}} >{item.lcn}</Text>
+                                            <Text adjustsFontSizeToFit numberOfLines={1} style={{fontFamily:"PoetsenOne-Regular"}} >{item.shop_id}</Text>
                                         </View>
-                                        <View style={styles.dist}>
+                                        {/* <View style={styles.dist}>
                                              <Text adjustsFontSizeToFit style={{fontFamily:"OpenSans-Italic"}} >{item.dist}</Text>
-                                        </View>
+                                        </View> */}
                                     </View>
                          </View>
                          </TouchableOpacity>
@@ -147,8 +148,7 @@ header:{
     borderRadius:5,
     borderWidth:3,
     borderColor:"#ccc",
-
-    
+    //marginBottom:"1%"
 },
 img:{
     height:"100%",
@@ -192,11 +192,13 @@ color:"#4F517D",
 });
 
 const mapStateToProps = state => ({
-    redux:state
+    redux:state,
+    token:state.token
 });
 
 const mapDispatchToProps = dispatch => ({
-    add_shop_id : (id)=>dispatch(addshopid(id))
+    add_shop_id : (id)=>dispatch(addshopid(id)),
+    removeUserToken: () => dispatch(removeUserToken()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(StoresView);

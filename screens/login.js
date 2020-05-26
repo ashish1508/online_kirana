@@ -29,7 +29,7 @@ class LoginView extends Component {
 
   _signInAsync = () => {
 
-    fetch('http://63eb3b16.ngrok.io/api/usr_login', {
+    fetch('http://grocee.thenomadic.ninja/api/usr_login', {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -39,10 +39,11 @@ class LoginView extends Component {
         username: "admin@grocery.com",
         password: "password",
       }),
-    }).then((response) => response.json())
-        .then((responseJson) => {
+    }).then((response)=>(response.json()))
+       .then((json)=> {
           //this.props.navigation.navigate("Categories")
-          token = responseJson.token;
+          console.log(json)
+          token = json.token;
           console.log("login : ")
           console.log(token)
           this.props.saveUserToken(token)
