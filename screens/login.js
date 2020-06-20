@@ -13,6 +13,10 @@ import {
 
 import { connect } from 'react-redux';
 import { saveUserToken } from '../redux/actions';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+
+
+
 class LoginView extends Component {
 
   constructor(props) {
@@ -24,16 +28,24 @@ class LoginView extends Component {
     }
   }
 
+ 
+
+  componentDidMount(){
+      
+     
+  }
 
 
 
   _signInAsync = () => {
+    console.log("fetching")
 
-    fetch('http://grocee.thenomadic.ninja/api/usr_login', {
+  fetch('https://grocee.thenomadic.ninja/api/usr_login', {
       method: 'POST',
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
+  
       },
       body: JSON.stringify({
         username: "admin@grocery.com",
@@ -72,6 +84,9 @@ class LoginView extends Component {
   render() {
     return (
       <View style={styles.container}>
+        <View style={{position:"absolute",top:120,width:"100%",justifyContent:"center",alignItems:"center"}}>
+          <Text style={{fontFamily:"Acme-Regular",fontSize:50}}>Online Kirana</Text>
+        </View>
         <View style={styles.inputContainer}>
           
           <TextInput style={styles.inputs}
@@ -90,14 +105,14 @@ class LoginView extends Component {
               onChangeText={(password) => this.setState({password})}/>
         </View>
 
-        <TouchableHighlight style={[styles.buttonContainer, styles.loginButton]} onPress={this._signInAsync}>
+        <TouchableOpacity style={[styles.buttonContainer, styles.loginButton]} onPress={this._signInAsync}>
           <Text style={styles.loginText}>Login</Text>
-        </TouchableHighlight>
+        </TouchableOpacity>
 
-        <TouchableHighlight style={styles.buttonContainer} onPress={() =>  this.props.navigation.navigate('Signup')}>
+        <TouchableOpacity style={styles.buttonContainer} onPress={() =>  this.props.navigation.navigate('Signup')}>
             <Text>Go To Signup</Text>
             
-        </TouchableHighlight>
+        </TouchableOpacity>
       </View>
     );
   }
@@ -108,7 +123,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#DCDCDC',
+    backgroundColor: '#f9ed32',
   },
   inputContainer: {
       borderBottomColor: '#F5FCFF',

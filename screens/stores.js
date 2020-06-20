@@ -1,13 +1,31 @@
 import React from 'react';
-import { StyleSheet, Text, View,Button ,Image, TouchableOpacity,FlatList,ActivityIndicator} from 'react-native';
+import { StyleSheet, Text, View,Button ,Image, TouchableOpacity,FlatList,ActivityIndicator,Dimensions} from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import { connect } from 'react-redux';
-import { removeUserToken ,addshopid} from '../redux/actions';
+import { removeUserToken ,addshopdetails} from '../redux/actions';
 import StoreItems from '../Components/storeItems'
 import Stores from '../Components/stores'
 import Modal from 'react-native-modal'
 import Icon from 'react-native-vector-icons/AntDesign';
+import ContentLoader from 'react-native-content-loader'
+import {Circle, Rect} from 'react-native-svg'
+import SkeletonPlaceholder from "react-native-skeleton-placeholder";
+import { TextInput } from 'react-native-gesture-handler';
 
+let width= Dimensions.get('window').width
+let height= Dimensions.get('window').height
+// loadingComp = () => {
+//     return(       
+        
+//     <ContentLoader height={300} duration={1000} >
+//         <Circle cx="30" cy="30" r="30" />
+//         <Rect x="75" y="13" rx="4" ry="4" width="100" height="13"/>
+//         <Rect x="75" y="37" rx="4" ry="4" width="50" height="8"/>
+//         <Rect x="0" y="70" rx="5" ry="5" width="400" height="200"/>
+//     </ContentLoader>
+    
+//     )
+// }
 
 class StoresView extends React.Component {
 
@@ -15,6 +33,7 @@ class StoresView extends React.Component {
         data:[],
         page: 1,
         loading: false,
+        next:false
     }
 
     _signOutAsync =  () => {
@@ -32,8 +51,8 @@ class StoresView extends React.Component {
         console.log("fetching page : "+this.state.page)
         console.log(this.props.token)
         
-        //console.log(this.props.token.token)
-        const response = await fetch('http://grocee.thenomadic.ninja/api/get_shops', {
+       // console.log(this.props.token.token)
+        const response = await fetch('https://grocee.thenomadic.ninja/api/get_shops', {
             method: 'POST',
             headers: {
               Accept: 'application/json',
@@ -44,12 +63,18 @@ class StoresView extends React.Component {
               page: this.state.page,
             }),
           })
+          console.log(response.status)
+          if(response.status===401){
+              this._signOutAsync()
+          }
+         
           const json = await response.json()
           console.log("-------")
           console.log(json)
           
               this.setState(state => ({
                 data: [...state.data, ...json.shops],
+                next:json.has_next,
                 loading: false
               }));
 
@@ -62,31 +87,97 @@ class StoresView extends React.Component {
 
     handleEnd = () => {
         console.log("handle end")
-        if(this.state.page<4)
+        if(this.state.next)
         this.setState(state => ({ page: state.page + 1 }), () => this.fetchData());
+        
     };
 
 
     defaultlistbackground = ()=>{
-        return (<View style={{flex:1}}><Text>No elements</Text></View>)
+        return (<View style={{flex:1,justifyContent:"center",alignItems:"center"}}><Text>Loading elements....</Text></View>)
     }
 
-    handlePress = (id) =>{
-        this.props.add_shop_id(id)
+    handlePress = (name,id,img) =>{
+        // this._signOutAsync()
+        let details={name:name,id:id,img:img}
+        console.log(details)
+        this.props.add_shop_details(details)
         this.props.navigation.navigate("Categories")
     }
 
    render() {
        
+            if(this.state.data.length<3){
+                console.log(width)
+                return(
+                    
+                    Array.from({length: height/(0.3*width)}).map((_, index) => (
+                        <View key={index} style={{marginTop:"2%"}}>
+                          <SkeletonPlaceholder>
+                            <SkeletonPlaceholder.Item width={0.98*width} aspectRatio={2.5} flexDirection="row" marginHorizontal="4%">
+                             <SkeletonPlaceholder.Item width={0.3*width} aspectRatio={1}/>
+                             <SkeletonPlaceholder.Item
+                                flex={1}
+                             
+                                marginLeft={0.05*width}>
+                                <SkeletonPlaceholder.Item
+                                width="50%"
+                                aspectRatio={5}
+                                borderRadius={6}
+                                />
+                                <SkeletonPlaceholder.Item
+                                width="30%"
+                                marginTop="10%"
+                                aspectRatio={5}
+                                borderRadius={6}
+                                />
+                       
+                            </SkeletonPlaceholder.Item>
+                              
+                            </SkeletonPlaceholder.Item>
+                          </SkeletonPlaceholder>
+                        </View>
+                      ))
+                  )
+            }
+       
             return (
+
                 <View style = {styles.container}>
-                    <Button title="I'm done, sign me out" onPress={this._signOutAsync} />
-                    <Button title="Categories" onPress={()=>this.props.navigation.navigate("Categories")}/>
-                     <Text>{this.props.redux.cart.length}</Text>
-                     {/* <Stores nav = {()=>this.props.navigation.navigate("Categories")}/>   */}
+                    
+                    <View style={{width:"100%",aspectRatio:3.3,backgroundColor:"#f9ed32"}}>
+
+                        <View style={{flexDirection:"row",width:"98%",marginTop:"2%",marginHorizontal:"1%",aspectRatio:7}}>
+                            <View style={{flex:6,justifyContent:"center"}}>
+                                <Text style={{marginLeft:"5%",fontFamily:"Acme-Regular",fontSize:20}} adjustsFontSizeToFit>Online Kirana</Text>
+                            </View>
+                            <View style={{flex:2,alignItems:"center",justifyContent:"center"}}>
+                            <Icon style={{fontSize:(width*0.50)/7,margin:"2%"}}  name="shoppingcart"  color="black" />
+                            </View>
+                            <View style={{flex:2,alignItems:"center",justifyContent:"center"}}>
+                            <Icon style={{fontSize:(width*0.50)/7,margin:"2%"}}  name="user"  color="black" />
+                            </View>
+                            
+                        </View>
+
+                        
+                        <View style={{width:"96%",aspectRatio:9,margin:"2%",backgroundColor:"white",flexDirection:"row"}}>
+                            
+                                <Icon style={{fontSize:(width*0.50)/9,margin:"2%"}}  name="search1"  color="#aaa" />
+                                <TextInput 
+                                style={{flex:1}} 
+                                allowFontScaling={false}
+                                placeholder={"Search for shops"}
+                                placeholderTextColor={"#aaa"}/>
+                            
+
+                        </View>
+
+                    </View>
+
                      <FlatList
                         data={this.state.data}
-                        style={{backgroundColor:"#ccc"}}
+                        style={{backgroundColor:"#e2e3da"}}
                         keyExtractor={(x, i) => i.toString()}
                         onEndReached={() => this.handleEnd()}
                         onEndReachedThreshold={0.3}
@@ -96,7 +187,7 @@ class StoresView extends React.Component {
                             ? <ActivityIndicator size="large" animating />
                             : null}
                         renderItem={({ item }) =>
-                        <TouchableOpacity style={styles.header} onPress={()=>this.handlePress(item.shop_id)}>
+                        <TouchableOpacity style={styles.header} onPress={()=>this.handlePress(item.name,item.shop_id,item.image)}>
                         <View style={{flex:1,flexDirection:"row",backgroundColor:"white",justifyContent:"center",alignItems:"center"}} >
                              
                                   <Image
@@ -124,6 +215,7 @@ class StoresView extends React.Component {
 
                 </View>}
                 </View>
+               
             )
 
    }
@@ -132,7 +224,7 @@ class StoresView extends React.Component {
 const styles = StyleSheet.create({
    container: {
       flex: 1,
-      backgroundColor: '#ccc',
+      backgroundColor: 'white',
    },
    bg:{
     width:"98%",
@@ -147,10 +239,10 @@ header:{
     backgroundColor:"white",
     width:"98%",
     marginHorizontal:"1%",
-    aspectRatio:3,
+    aspectRatio:2.5,
     borderRadius:5,
-    borderWidth:3,
-    borderColor:"#ccc",
+    borderWidth:1,
+    borderColor:"#e2e3da",
     //marginBottom:"1%"
 },
 img:{
@@ -211,7 +303,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-    add_shop_id : (id)=>dispatch(addshopid(id)),
+    add_shop_details : (details)=>dispatch(addshopdetails(details)),
     removeUserToken: () => dispatch(removeUserToken()),
 });
 

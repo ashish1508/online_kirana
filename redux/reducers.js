@@ -20,67 +20,7 @@ const tokenReducer = (state = {
             return state;
     }
 };
-const cartReducer = (state=[],action)=>{
-    switch(action.type){
-        case 'ADD_TO_CART':
-            let newItem = {
-                name:action.item.name,
-                qu:action.item.def_det.qu,
-                pri:action.item.def_det.pri,
-                quant:1
 
-            }
-            return [...state,newItem];
-        case 'REMOVE_FROM_CART':
-            let new_cart=state
-            newcart = newcart.filter(it =>{
-                return it.name!==action.item.name || it.qu!==action.item.def_det.qu
-            })
-            return newcart
-        case 'INC_QUANT_IN_CART':
-            newcart = state
-            let i;
-           
-            for(i=0;i<newcart.length;i++){
-                
-                if(newcart[i].name === action.item.name &&  newcart[i].qu === action.item.def_det.qu){
-                    let newitem = {
-                        name:action.item.name,
-                        qu:action.item.def_det.qu,
-                        pri:action.item.def_det.pri,
-                        quant:action.item.def_det.quant + 1
-
-                    }
-                    newcart[i]=newitem
-                    
-                    return newcart
-                }
-            }
-        case 'DEC_QUANT_IN_CART':
-            newcart = state
-           
-            let j;
-            for(j=0;j<newcart.length;j++){
-                
-                if(newcart[j].name === action.item.name &&  newcart[j].qu === action.item.def_det.qu){
-                    let newitem = {
-                        name:action.item.name,
-                        qu:action.item.def_det.qu,
-                        pri:action.item.def_det.pri,
-                        quant:action.item.def_det.quant - 1
-
-                    }
-                    newcart[j]=newitem
-                
-                    return newcart
-                }
-            }
-        default:
-            return state
-
-
-    }
-}
 data = [
     {
         name:'item1',
@@ -112,18 +52,57 @@ const itemstateReducer = (state=data,action)=>{
     }
 }
 
-const shopReducer = (state=-1,action)=>{
+const shopReducer = (state={name:"",id:-1,img:""},action)=>{
     switch(action.type){
-        case 'ADD_SHOP_ID':
-            return action.id
+        case 'ADD_SHOP_DETAILS':
+            return action.payload
         default:
             return state
     }
 }
 
+const cartReducer = (state={
+    shop_id:-1,
+    items:{}
+    },action) => {
+    
+    switch(action.type){
+        case 'NEW_SHOP':
+            return {...state, shop_id : action.payload}
+        case 'CART':
+            newstate = {...state}
+            let item_name = action.payload.item.name
+            item_val = action.payload.item
+            newitems = {...newstate.items}
+            if(item_val.total_quant===0){
+                delete newitems[item_name]
+            }else{
+                newitems[item_name] = item_val
+            }
+            newstate.shop_id = action.payload.shop_id
+            newstate.items = newitems
+            
+            return newstate
+        case 'RELOAD_CART':
+            return action.payload
+        case 'CLEAR_CART':
+            newstate = {
+                shop_id:action.id,
+                items:{}
+            }
+            return newstate
+        
+        default : return state
+    }
+
+}
+
+
+
+
 export default combineReducers({
     token: tokenReducer,
     cart:cartReducer,
     itemstate:itemstateReducer,
-    shop_id:shopReducer
+    shop:shopReducer
 });
